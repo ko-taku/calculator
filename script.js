@@ -10,6 +10,18 @@ function calculate(n1, operator, n2) {
   let result = 0;
   // TODO : n1과 n2를 operator에 따라 계산하는 함수를 만드세요.
   // ex) 입력값이 n1 : '1', operator : '+', n2 : '2' 인 경우, 3이 리턴됩니다.
+  let num1 = +n1;
+  let num2 = +n2;
+  if (operator === '+') {
+    result = num1 + num2;
+  } else if (operator === '-') {
+    result = num1 - num2;
+  } else if (operator === '*') {
+    result = num1 * num2;
+  } else {
+    result = num1 / num2;
+  }
+
   return String(result);
 }
 
@@ -28,21 +40,45 @@ buttons.addEventListener('click', function (event) {
       // 그리고 버튼의 클레스가 number이면
       // 아래 코드가 작동됩니다.
       console.log('숫자 ' + buttonContent + ' 버튼');
+      if (firstOperend.textContent === '0') {
+
+        firstOperend.textContent = buttonContent;
+
+      } else {
+
+        secondOperend.textContent = buttonContent
+
+      }
     }
 
     if (action === 'operator') {
+      operator.textContent = buttonContent;
       console.log('연산자 ' + buttonContent + ' 버튼');
+
     }
 
     if (action === 'decimal') {
-      // console.log('소수점 버튼');
+      console.log('소수점 버튼');
     }
 
     if (action === 'clear') {
+
+      firstOperend.textContent = '0';
+      operator.textContent = '+';
+      secondOperend.textContent = '0';
+      calculatedResult.textContent = '0';
+
       console.log('초기화 버튼');
     }
 
     if (action === 'calculate') {
+
+      let output = calculate(firstOperend.textContent, operator.textContent, secondOperend.textContent);
+
+      console.log(output);
+
+      calculatedResult.textContent = output;
+
       console.log('계산 버튼');
     }
   }
@@ -64,11 +100,76 @@ buttons.addEventListener('click', function (event) {
 
   // ! 여기서부터 Advanced Challenge & Nightmare 과제룰 풀어주세요.
   if (target.matches('button')) {
-    if (action === 'number') {}
-    if (action === 'operator') {}
-    if (action === 'decimal') {}
-    if (action === 'clear') {}
-    if (action === 'calculate') {}
+    if (action === 'number') {
+      if (display.textContent === '0' || previousKey === 'operator' || previousKey === 'calculate') {
+        display.textContent = buttonContent;
+      }
+      else {
+        display.textContent += buttonContent;
+      }
+      previousKey = 'number';
+      console.log(display);
+    }
+    if (action === 'operator') {
+      if (firstNum === undefined) {
+        operatorForAdvanced = buttonContent;
+        firstNum = display.textContent;
+        console.log(firstNum);
+
+
+      } else if (firstNum !== undefined && previousKey === 'number') {
+        operatorForAdvanced = buttonContent;
+        previousNum = display.textContent;
+        num1 = +firstNum;
+        num2 = +previousNum;
+        const result = calculate(num1, operatorForAdvanced, num2);
+        display.textContent = result;
+        firstNum = result;
+        previousNum = undefined;
+      } else {
+
+      }
+
+      previousKey = 'operator';
+    }
+    if (action === 'decimal') {
+      if (display.textContent.includes('.') !== true) {
+        display.textContent += '.';
+      }
+      previousKey = 'decimal';
+    }
+    if (action === 'clear') {
+      display.textContent = '0';
+      firstNum = undefined;
+      operatorForAdvanced = undefined;
+      previousNum = undefined;
+      previousKey = 'clear';
+    }
+    if (action === 'calculate') {
+      if (previousKey === 'clear') {
+        console.log('초기화상태');
+      } else if (firstNum !== undefined && previousKey === 'calculate' && previousNum !== un) {
+        num1 = +firstNum;
+        num2 = +previousNum;
+        const result = calculate(num1, operatorForAdvanced, num2);
+        display.textContent = result;
+        firstNum = result;
+        console.log('계산완료상태' + result);
+      } else if (firstNum !== undefined && previousKey === 'operator') {
+        console.log('연산자 바로 다음 결과값');
+      }
+      else if (firstNum !== undefined && operatorForAdvanced !== undefined && previousKey === 'number') {
+        previousNum = display.textContent;
+        num1 = +firstNum;
+        num2 = +previousNum;
+        const result = calculate(num1, operatorForAdvanced, num2);
+        display.textContent = result;
+        firstNum = result;
+
+      }
+
+    }
   }
+
 
 });
